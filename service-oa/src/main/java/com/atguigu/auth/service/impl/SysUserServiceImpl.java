@@ -21,7 +21,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public void updateStatus(Long id, Integer status) {
         SysUser sysUser = baseMapper.selectById(id);
-        if (status != 0 || status != 1){
+        if (status != 0 && status != 1){
             throw new CustomException(30000,("状态值不合法"));
         }
         sysUser.setStatus(status);
