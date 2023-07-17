@@ -11,3 +11,13 @@ spring:
     url: jdbc:mysql://localhost:3306/guigu-oa?serverTimezone=GMT%2B8&useSSL=false&characterEncoding=utf-8
     username: root
     password: 12345678
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+9
+  knife4j:
+    # 开启增强配置
+    enable: true
+    setting:
+      # 是否开启动态参数调试功能,默认关闭
+      enableDynamicParameter: true

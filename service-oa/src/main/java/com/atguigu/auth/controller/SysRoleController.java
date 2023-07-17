@@ -45,21 +45,28 @@ public class SysRoleController {
      * @param sysRoleQueryVo 用户角色查询条件
      * @return
      */
-    @ApiOperation("分页查询角色")
+    @ApiOperation("条件分页查询")
     @GetMapping("{page}/{limit}")
-    public Result<IPage<SysRole>> pageResult(@PathVariable Long page,
-                                             @PathVariable Long limit,
-                                             SysRoleQueryVo sysRoleQueryVo){
-        Page<SysRole> sysRolePage = new Page<>(page,limit);
-        LambdaQueryWrapper<SysRole> queryWrapper = new LambdaQueryWrapper<>();
+    public Result pageQueryRole(@PathVariable Long page,
+                                @PathVariable Long limit,
+                                SysRoleQueryVo sysRoleQueryVo) {
+        //调用service的方法实现
+        //1 创建Page对象，传递分页相关参数
+        //page 当前页  limit 每页显示记录数
+        Page<SysRole> pageParam = new Page<>(page,limit);
+
+        //2 封装条件，判断条件是否为空，不为空进行封装
+        LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<>();
         String roleName = sysRoleQueryVo.getRoleName();
-        if (!StringUtils.isEmpty(roleName)){
-			queryWrapper.like(SysRole::getRoleName,roleName);
+        if(!StringUtils.isEmpty(roleName)) {
+            //封装 like模糊查询
+            wrapper.like(SysRole::getRoleName,roleName);
         }
-        IPage<SysRole> pageModel = sysRoleService.page(sysRolePage, queryWrapper);
+
+        //3 调用方法实现
+        IPage<SysRole> pageModel = sysRoleService.page(pageParam, wrapper);
         return Result.ok(pageModel);
     }
-
     @ApiOperation("添加角色")
     @PostMapping("/save")
     public Result<String> save(@RequestBody  SysRole sysRole){
