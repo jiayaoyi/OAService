@@ -1,9 +1,12 @@
 package com.atguigu.auth.controller;
 
 
+import com.atguigu.auth.service.SysRoleService;
+import com.atguigu.auth.service.SysUserRoleService;
 import com.atguigu.auth.service.SysUserService;
 import com.atguigu.common.result.Result;
 import com.atguigu.model.system.SysUser;
+import com.atguigu.vo.system.AssginRoleVo;
 import com.atguigu.vo.system.SysUserQueryVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -15,6 +18,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -32,6 +36,11 @@ public class SysUserController {
     @Autowired
     private SysUserService sysUserService;
 
+    @Autowired
+    private SysUserRoleService sysUserRoleService;
+
+    @Autowired
+    private SysRoleService sysRoleService;
     @ApiOperation("查询所有用户")
     @GetMapping("findAll")
     public Result<List<SysUser>> findAll(){
@@ -48,6 +57,12 @@ public class SysUserController {
 
         LambdaQueryWrapper<SysUser> wrapper = new LambdaQueryWrapper<>();
         String username = sysUserQueryVo.getKeyword();
+        if (!StringUtils.isEmpty(sysUserQueryVo.getCreateTimeBegin())) {
+            wrapper.ge(SysUser::getCreateTime, sysUserQueryVo.getCreateTimeBegin());
+        }
+        if (!StringUtils.isEmpty(sysUserQueryVo.getCreateTimeEnd())) {
+            wrapper.le(SysUser::getCreateTime, sysUserQueryVo.getCreateTimeEnd());
+        }
         if(!StringUtils.isEmpty(username)) {
             wrapper.like(SysUser::getUsername,username);
         }
@@ -105,5 +120,14 @@ public class SysUserController {
         }else {
             return Result.fail("删除失败");
         }
+    }
+
+
+
+    @ApiOperation("根据用户ID更改用户状态")
+    @PutMapping("/updateStatus/{id}/{status}")
+    public Result updateStatus (@PathVariable Long id, @PathVariable Integer status){
+        sysUserService.updateStatus(id,status);
+        return Result.ok();
     }
 }

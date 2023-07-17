@@ -3,6 +3,7 @@ package com.atguigu.auth.controller;
 import com.atguigu.auth.service.SysRoleService;
 import com.atguigu.common.result.Result;
 import com.atguigu.model.system.SysRole;
+import com.atguigu.vo.system.AssginRoleVo;
 import com.atguigu.vo.system.SysRoleQueryVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -15,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * SysRoleController
@@ -50,20 +52,13 @@ public class SysRoleController {
     public Result pageQueryRole(@PathVariable Long page,
                                 @PathVariable Long limit,
                                 SysRoleQueryVo sysRoleQueryVo) {
-        //调用service的方法实现
-        //1 创建Page对象，传递分页相关参数
-        //page 当前页  limit 每页显示记录数
         Page<SysRole> pageParam = new Page<>(page,limit);
 
-        //2 封装条件，判断条件是否为空，不为空进行封装
         LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<>();
         String roleName = sysRoleQueryVo.getRoleName();
         if(!StringUtils.isEmpty(roleName)) {
-            //封装 like模糊查询
             wrapper.like(SysRole::getRoleName,roleName);
         }
-
-        //3 调用方法实现
         IPage<SysRole> pageModel = sysRoleService.page(pageParam, wrapper);
         return Result.ok(pageModel);
     }
@@ -116,5 +111,18 @@ public class SysRoleController {
         }else {
             return Result.fail("删除失败");
         }
+    }
+    @ApiOperation("查询所有角色")
+    @GetMapping("/toAssign/{userId}")
+    public Result toAssign(@PathVariable Long userId){
+        Map<String,Object> map = sysRoleService.findRoleDataByUserId(userId);
+        return Result.ok(map);
+    }
+
+    @ApiOperation("为用户分配角色")
+    @PostMapping("/doAssign")
+    public Result doAssign (@RequestBody AssginRoleVo assginRoleVo){
+        sysRoleService.doAssign(assginRoleVo);
+        return Result.ok();
     }
 }
