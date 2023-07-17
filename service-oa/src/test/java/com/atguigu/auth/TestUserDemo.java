@@ -63,4 +63,27 @@ public class TestUserDemo {
         int rows = sysUserMapper.deleteById(1); // replace 1 with the actual id
         System.out.println("Deleted: " + rows);
     }
+
+    @Test
+    public void addMultipleUsers() {
+        for (int i = 1; i <= 1000; i++) {
+            SysUser user = new SysUser();
+            // Format the username as "test" followed by a three-digit number
+            String username = String.format("%09d", i);
+            user.setUsername(username);
+            user.setPassword("testPassword");
+            user.setName("TestUser " + i);
+            user.setPhone("1234567890");
+            user.setHeadUrl("http://test.com/avatar.jpg");
+            user.setDeptId(1L);
+            user.setPostId(1L);
+            user.setDescription("This is test user number " + i);
+            user.setOpenId("testOpenId" + i);
+            user.setStatus(1);
+            // set all required fields according to your actual user model
+            int rows = sysUserMapper.insert(user);
+            System.out.println("Inserted: " + rows + " Username: " + username);
+        }
+    }
+
 }
