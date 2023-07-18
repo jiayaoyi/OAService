@@ -44,4 +44,5 @@ public class CustomException extends RuntimeException {
                 ", message=" + this.getMessage() +
                 '}';
     }
+
 }
