@@ -22,8 +22,6 @@ public class TestUserDemo {
     @Autowired
     private SysUserMapper sysUserMapper;
 
-    @Autowired
-    private SysUserService sysUserService;
 
     @Test
     public void getAll(){
@@ -85,5 +83,4 @@ public class TestUserDemo {
             System.out.println("Inserted: " + rows + " Username: " + username);
         }
     }
-
 }

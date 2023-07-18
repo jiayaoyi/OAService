@@ -3,12 +3,16 @@ package com.atguigu.common.result;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 全局统一返回结果类
  *
  */
 @Data
-public class Result<T> {
+public class Result<T> implements Serializable {
+    private static final long serialVersionUID = 1L;
+
 
     //返回码
     private Integer code;

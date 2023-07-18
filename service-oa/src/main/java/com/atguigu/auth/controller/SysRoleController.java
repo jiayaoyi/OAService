@@ -10,24 +10,18 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.*;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-/**
- * SysRoleController
- *
- * @author Jia Yaoyi
- * @date 2023/07/16
- */
 @RestController
-@Slf4j
 @RequestMapping("/admin/system/sysRole")
 @Api(tags = "角色管理接口")
+@EnableCaching
 public class SysRoleController {
 
     @Autowired
@@ -35,18 +29,12 @@ public class SysRoleController {
 
     @ApiOperation("查询所有角色")
     @GetMapping("findAll")
+    @Cacheable(value = "roles", key = "'findAll'")
     public Result<List<SysRole>> findAll(){
         List<SysRole> sysRoleList = sysRoleService.list();
         return Result.ok(sysRoleList);
     }
 
-    /**
-     * 分页查询角色
-     * @param page 页码
-     * @param limit 页面大小
-     * @param sysRoleQueryVo 用户角色查询条件
-     * @return
-     */
     @ApiOperation("条件分页查询")
     @GetMapping("{page}/{limit}")
     public Result pageQueryRole(@PathVariable Long page,
@@ -62,8 +50,10 @@ public class SysRoleController {
         IPage<SysRole> pageModel = sysRoleService.page(pageParam, wrapper);
         return Result.ok(pageModel);
     }
+
     @ApiOperation("添加角色")
     @PostMapping("/save")
+    @CachePut(value = "roles", key = "#sysRole.id")
     public Result<String> save(@RequestBody  SysRole sysRole){
         boolean isSuccess = sysRoleService.save(sysRole);
         if (isSuccess){
@@ -75,6 +65,7 @@ public class SysRoleController {
 
     @ApiOperation("获取角色")
     @GetMapping("get/{id}")
+    @Cacheable(value = "roles", key = "#id")
     public Result<SysRole> get (@PathVariable Long id ){
         SysRole sysRole = sysRoleService.getById(id);
         return Result.ok(sysRole);
@@ -82,6 +73,7 @@ public class SysRoleController {
 
     @ApiOperation("修改角色")
     @PutMapping("/update")
+    @CachePut(value = "roles", key = "#sysRole.id")
     public Result<String> update(@RequestBody  SysRole sysRole){
         boolean isSuccess = sysRoleService.updateById(sysRole);
         if (isSuccess){
@@ -93,6 +85,7 @@ public class SysRoleController {
 
     @ApiOperation("删除角色")
     @DeleteMapping("/remove/{id}")
+    @CacheEvict(value = "roles", key = "#id")
     public Result<String> delete(@PathVariable Long id){
         boolean isSuccess = sysRoleService.removeById(id);
         if (isSuccess){
@@ -101,9 +94,10 @@ public class SysRoleController {
             return Result.fail("删除失败");
         }
     }
-    
+
     @ApiOperation("批量删除")
     @DeleteMapping("/batchRemove")
+    @CacheEvict(value = "roles", allEntries = true)
     public Result<String> batchRemove(@RequestBody List<Long> idList){
         boolean isSuccess = sysRoleService.removeByIds(idList);
         if (isSuccess){
@@ -112,6 +106,7 @@ public class SysRoleController {
             return Result.fail("删除失败");
         }
     }
+
     @ApiOperation("查询所有角色")
     @GetMapping("/toAssign/{userId}")
     public Result toAssign(@PathVariable Long userId){
