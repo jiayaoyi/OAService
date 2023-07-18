@@ -30,5 +30,11 @@ public class GlobalException {
     }
 
     //自定义异常处理
+    @ResponseBody
+    @ExceptionHandler(CustomException.class)
+    public Result error(CustomException e){
+        e.printStackTrace();
+        return Result.fail().code(e.getCode()).message(e.getMessage());
+    }
 
 }

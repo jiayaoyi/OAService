@@ -25,7 +25,6 @@ public class MenuHelper {
             if (pid == 0) {
                 //为一级菜单，将其添加到tree集合
                 trees.add(getChildren(sysMenu, sysMeneList));
-
             }
         }
         return trees;

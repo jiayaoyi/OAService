@@ -1,7 +1,9 @@
 package com.atguigu.auth.controller;
 
 import com.atguigu.auth.service.SysUserService;
+import com.atguigu.common.jwt.JwtHelper;
 import com.atguigu.common.result.Result;
+import com.atguigu.common.utils.MD5;
 import com.atguigu.model.system.SysUser;
 import com.atguigu.vo.system.SysUserQueryVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -37,6 +39,11 @@ public class SysUserController {
     @PostMapping("/save")
     @CachePut(value = "users", key = "#sysUser.id")
     public Result<String> save(@RequestBody  SysUser sysUser){
+        //MD5加密
+        String password = MD5.encrypt(sysUser.getPassword());
+        if (!StringUtils.isEmpty(password)){
+            sysUser.setPassword(password);
+        }
         boolean isSuccess = sysUserService.save(sysUser);
         if (isSuccess){
             return Result.ok();
