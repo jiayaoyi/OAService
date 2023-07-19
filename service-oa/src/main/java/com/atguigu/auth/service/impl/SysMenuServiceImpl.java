@@ -3,7 +3,7 @@ package com.atguigu.auth.service.impl;
 import com.atguigu.auth.service.SysRoleMenuService;
 
 import com.atguigu.auth.util.MenuHelper;
-import com.atguigu.common.exception.CustomException;
+import com.atguigu.security.common.exception.CustomException;
 import com.atguigu.model.system.SysMenu;
 import com.atguigu.auth.mapper.SysMenuMapper;
 import com.atguigu.auth.service.SysMenuService;
@@ -84,7 +84,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         //3 根据获取菜单id，获取对应菜单对象
         List<Long> menuIdList = sysRoleMenuList.stream().map(c -> c.getMenuId()).collect(Collectors.toList());
 
-        //3.1 拿着菜单id 和所有菜单集合里面id进行比较，如果相同封装
+        //3.1 菜单id 和所有菜单集合里面id进行比较，如果相同封装
         allSysMenuList.stream().forEach(item -> {
             if(menuIdList.contains(item.getId())) {
                 item.setSelect(true);

@@ -1,4 +1,4 @@
-package com.atguigu.common.config.redis;
+package com.atguigu.security.common.config.redis;
 
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;

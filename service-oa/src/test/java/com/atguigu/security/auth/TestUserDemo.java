@@ -1,7 +1,6 @@
-package com.atguigu.auth;
+package com.atguigu.security.auth;
 
 import com.atguigu.auth.mapper.SysUserMapper;
-import com.atguigu.auth.service.SysUserService;
 import com.atguigu.model.system.SysUser;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

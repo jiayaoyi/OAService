@@ -2,8 +2,9 @@ package com.atguigu.auth.service.impl;
 
 import com.atguigu.auth.mapper.SysUserMapper;
 import com.atguigu.auth.service.SysUserService;
-import com.atguigu.common.exception.CustomException;
+import com.atguigu.security.common.exception.CustomException;
 import com.atguigu.model.system.SysUser;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -26,5 +27,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         sysUser.setStatus(status);
         baseMapper.updateById(sysUser);
+    }
+
+    @Override
+    public SysUser getUserByUserName(String userName) {
+        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(SysUser::getUsername,userName);
+        SysUser sysUser = baseMapper.selectOne(queryWrapper);
+        return sysUser;
     }
 }
