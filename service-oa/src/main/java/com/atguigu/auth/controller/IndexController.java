@@ -2,10 +2,10 @@ package com.atguigu.auth.controller;
 
 import com.atguigu.auth.service.SysMenuService;
 import com.atguigu.auth.service.SysUserService;
-import com.atguigu.common.exception.CustomException;
+import com.atguigu.security.common.exception.CustomException;
 import com.atguigu.common.jwt.JwtHelper;
 import com.atguigu.common.result.Result;
-import com.atguigu.common.utils.MD5;
+import com.atguigu.security.common.utils.MD5;
 import com.atguigu.model.system.SysUser;
 import com.atguigu.vo.system.LoginVo;
 import com.atguigu.vo.system.RouterVo;

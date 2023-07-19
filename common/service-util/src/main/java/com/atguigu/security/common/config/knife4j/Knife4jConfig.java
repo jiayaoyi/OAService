@@ -1,4 +1,4 @@
-package com.atguigu.common.config.knife4j;
+package com.atguigu.security.common.config.knife4j;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

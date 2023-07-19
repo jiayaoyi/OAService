@@ -3,7 +3,6 @@ package com.atguigu.auth.service;
 
 import com.atguigu.model.system.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
-import io.swagger.models.auth.In;
 
 /**
  * <p>
@@ -15,4 +14,6 @@ import io.swagger.models.auth.In;
  */
 public interface SysUserService extends IService<SysUser> {
 	public void updateStatus (Long id, Integer status);
+
+	SysUser getUserByUserName(String userName);
 }

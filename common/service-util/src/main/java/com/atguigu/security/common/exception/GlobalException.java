@@ -1,4 +1,4 @@
-package com.atguigu.common.exception;
+package com.atguigu.security.common.exception;
 
 import com.atguigu.common.result.Result;
 import org.springframework.web.bind.annotation.ControllerAdvice;
