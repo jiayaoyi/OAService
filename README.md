@@ -1,3 +1,3 @@
 # OAService
-#backend of authrity management system
+#backend of authority management system
 #for study
