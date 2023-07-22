@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin/system/sysUser")
 @Api(tags = "用户管理接口")
-@EnableCaching
 public class SysUserController {
 
     @Autowired
@@ -28,7 +28,6 @@ public class SysUserController {
 
     @ApiOperation("查询所有用户")
     @GetMapping("findAll")
-    @Cacheable(value = "users", key = "'findAll'")
     public Result<List<SysUser>> findAll(){
         List<SysUser> sysUserList = sysUserService.list();
         return Result.ok(sysUserList);
@@ -36,7 +35,7 @@ public class SysUserController {
 
     @ApiOperation("添加用户")
     @PostMapping("/save")
-    @CachePut(value = "users", key = "#sysUser.id")
+    @PreAuthorize("hasAuthority('bnt.sysUser.add')")
     public Result<String> save(@RequestBody  SysUser sysUser){
         //MD5加密
         String password = MD5.encrypt(sysUser.getPassword());
@@ -53,7 +52,7 @@ public class SysUserController {
 
     @ApiOperation("获取用户")
     @GetMapping("get/{id}")
-    @Cacheable(value = "users", key = "#id")
+    @PreAuthorize("hasAuthority('bnt.sysUser.list')")
     public Result<SysUser> get (@PathVariable Long id ){
         SysUser sysUser = sysUserService.getById(id);
         return Result.ok(sysUser);
@@ -61,7 +60,8 @@ public class SysUserController {
 
     @ApiOperation("修改用户")
     @PutMapping("/update")
-    @CachePut(value = "users", key = "#sysUser.id")
+    @PreAuthorize("hasAuthority('bnt.sysUser.update')")
+
     public Result<String> update(@RequestBody SysUser sysUser){
         boolean isSuccess = sysUserService.updateById(sysUser);
         if (isSuccess){
@@ -73,7 +73,7 @@ public class SysUserController {
 
     @ApiOperation("删除用户")
     @DeleteMapping("/remove/{id}")
-    @CacheEvict(value = "users", key = "#id")
+    @PreAuthorize("hasAuthority('bnt.sysUser.remove')")
     public Result<String> delete(@PathVariable Long id){
         boolean isSuccess = sysUserService.removeById(id);
         if (isSuccess){
@@ -85,6 +85,7 @@ public class SysUserController {
 
     @ApiOperation("条件分页查询")
     @GetMapping("{page}/{limit}")
+    @PreAuthorize("hasAuthority('bnt.sysUser.list')")
     public Result pageQueryUser(@PathVariable Long page,
                                 @PathVariable Long limit,
                                 SysUserQueryVo sysUserQueryVo) {
@@ -112,7 +113,7 @@ public class SysUserController {
 
     @ApiOperation("批量删除用户")
     @DeleteMapping("/batchRemove")
-    @CacheEvict(value = "users", allEntries = true)
+    @PreAuthorize("hasAuthority('bnt.sysUser.remove')")
     public Result<String> batchRemove(@RequestBody List<Long> idList){
         boolean isSuccess = sysUserService.removeByIds(idList);
         if (isSuccess){
@@ -124,7 +125,7 @@ public class SysUserController {
 
     @ApiOperation("根据用户ID更改用户状态")
     @GetMapping ("/updateStatus/{id}/{status}")
-    @CacheEvict(value = "users", key = "#id")
+    @PreAuthorize("hasAuthority('bnt.sysUser.update')")
     public Result updateStatus (@PathVariable Long id, @PathVariable Integer status){
         sysUserService.updateStatus(id,status);
         return Result.ok();

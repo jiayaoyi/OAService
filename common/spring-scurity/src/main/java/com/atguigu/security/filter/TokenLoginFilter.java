@@ -1,6 +1,7 @@
 package com.atguigu.security.filter;
 
 
+import com.alibaba.fastjson.JSON;
 import com.atguigu.common.jwt.JwtHelper;
 import com.atguigu.common.result.ResponseUtil;
 import com.atguigu.common.result.Result;
@@ -8,6 +9,8 @@ import com.atguigu.common.result.ResultCodeEnum;
 import com.atguigu.security.custom.CustomUser;
 import com.atguigu.vo.system.LoginVo;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -31,15 +34,19 @@ import static com.atguigu.common.jwt.JwtHelper.getUsername;
  * @author Jia Yaoyi
  * @date 2023/07/20
  */
+
 public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
 
+    private RedisTemplate redisTemplate;
     //构造方法
-    public TokenLoginFilter(AuthenticationManager authenticationManager){
+    public TokenLoginFilter(AuthenticationManager authenticationManager, RedisTemplate redisTemplate){
         this.setAuthenticationManager(authenticationManager);
         this.setPostOnly(false);
         this.setRequiresAuthenticationRequestMatcher(new
                 AntPathRequestMatcher("/admin/system/index/login","POST"));
+        this.redisTemplate = redisTemplate;
     }
+
     //重写父类中方法
     //获取输入用户名密码，调用方法完成认证
     @Override
@@ -64,6 +71,8 @@ public class TokenLoginFilter extends UsernamePasswordAuthenticationFilter {
         CustomUser customUser = (CustomUser) authResult.getPrincipal();
         //生成token
         String token = JwtHelper.createToken(customUser.getSysUser().getId(), customUser.getSysUser().getUsername());
+        //获取当前用户权限数据，放入redis。key:username value：权限数据
+        redisTemplate.opsForValue().set(customUser.getUsername(),JSON.toJSONString(customUser.getAuthorities()));
         //返回
         Map<String,Object> map = new HashMap<>();
         map.put("token",token);

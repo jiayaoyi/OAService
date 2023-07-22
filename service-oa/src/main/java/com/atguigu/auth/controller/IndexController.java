@@ -12,6 +12,7 @@ import com.atguigu.vo.system.RouterVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,9 @@ public class IndexController {
 
     @Autowired
     private SysMenuService sysMenuService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 登录方法
@@ -109,6 +113,8 @@ public class IndexController {
      */
     @PostMapping("/logout")
     public Result logout(){
+        // Removing user's cache
+        redisTemplate.delete(redisTemplate.keys("*"));
         return Result.ok();
     }
 

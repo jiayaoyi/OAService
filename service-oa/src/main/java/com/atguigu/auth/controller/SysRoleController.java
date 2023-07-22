@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.*;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin/system/sysRole")
 @Api(tags = "角色管理接口")
-@EnableCaching
 public class SysRoleController {
 
     @Autowired
@@ -29,7 +29,6 @@ public class SysRoleController {
 
     @ApiOperation("查询所有角色")
     @GetMapping("findAll")
-    @Cacheable(value = "roles", key = "'findAll'")
     public Result<List<SysRole>> findAll(){
         List<SysRole> sysRoleList = sysRoleService.list();
         return Result.ok(sysRoleList);
@@ -37,6 +36,7 @@ public class SysRoleController {
 
     @ApiOperation("条件分页查询")
     @GetMapping("{page}/{limit}")
+    @PreAuthorize("hasAuthority('bnt.sysRole.list')")
     public Result pageQueryRole(@PathVariable Long page,
                                 @PathVariable Long limit,
                                 SysRoleQueryVo sysRoleQueryVo) {
@@ -53,7 +53,7 @@ public class SysRoleController {
 
     @ApiOperation("添加角色")
     @PostMapping("/save")
-    @CachePut(value = "roles", key = "#sysRole.id")
+    @PreAuthorize("hasAuthority('bnt.sysRole.add')")
     public Result<String> save(@RequestBody  SysRole sysRole){
         boolean isSuccess = sysRoleService.save(sysRole);
         if (isSuccess){
@@ -65,7 +65,7 @@ public class SysRoleController {
 
     @ApiOperation("获取角色")
     @GetMapping("get/{id}")
-    @Cacheable(value = "roles", key = "#id")
+    @PreAuthorize("hasAuthority('bnt.sysRole.list')")
     public Result<SysRole> get (@PathVariable Long id ){
         SysRole sysRole = sysRoleService.getById(id);
         return Result.ok(sysRole);
@@ -73,7 +73,7 @@ public class SysRoleController {
 
     @ApiOperation("修改角色")
     @PutMapping("/update")
-    @CachePut(value = "roles", key = "#sysRole.id")
+    @PreAuthorize("hasAuthority('bnt.sysRole.update')")
     public Result<String> update(@RequestBody  SysRole sysRole){
         boolean isSuccess = sysRoleService.updateById(sysRole);
         if (isSuccess){
@@ -85,7 +85,7 @@ public class SysRoleController {
 
     @ApiOperation("删除角色")
     @DeleteMapping("/remove/{id}")
-    @CacheEvict(value = "roles", key = "#id")
+    @PreAuthorize("hasAuthority('bnt.sysRole.remove')")
     public Result<String> delete(@PathVariable Long id){
         boolean isSuccess = sysRoleService.removeById(id);
         if (isSuccess){
@@ -97,7 +97,7 @@ public class SysRoleController {
 
     @ApiOperation("批量删除")
     @DeleteMapping("/batchRemove")
-    @CacheEvict(value = "roles", allEntries = true)
+    @PreAuthorize("hasAuthority('bnt.sysRole.remove')")
     public Result<String> batchRemove(@RequestBody List<Long> idList){
         boolean isSuccess = sysRoleService.removeByIds(idList);
         if (isSuccess){
