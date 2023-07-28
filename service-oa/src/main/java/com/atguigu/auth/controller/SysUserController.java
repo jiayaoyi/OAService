@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @author Jiayaoyi
+ * @since 2023-07-18
+ */
 @RestController
 @RequestMapping("/admin/system/sysUser")
 @Api(tags = "用户管理接口")

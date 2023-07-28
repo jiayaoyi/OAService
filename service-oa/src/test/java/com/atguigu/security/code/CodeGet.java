@@ -22,7 +22,7 @@ public class CodeGet {
         gc.setOutputDir("./service-oa/src/main/java");
 
         gc.setServiceName("%sService");	//去掉Service接口的首字母I
-        gc.setAuthor("atguigu");
+        gc.setAuthor("Jiayaoyi");
         gc.setOpen(false);
         mpg.setGlobalConfig(gc);
 
