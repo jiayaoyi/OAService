@@ -53,6 +53,7 @@ public class SysMenu extends BaseEntity {
 	private Integer status;
 
 	// 下级列表
+	//tree结构
 	@TableField(exist = false)
 	private List<SysMenu> children;
 	//是否选中

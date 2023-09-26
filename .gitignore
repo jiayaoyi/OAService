@@ -36,3 +36,6 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+guigu-oa.sql
+表结构.sql
